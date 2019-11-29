@@ -3,6 +3,11 @@ class DecisionTree(object):
         self.data = data
         self.target = target
 
+    def weighted_gini_index(self, p1, p2):
+        q1, q2 = 1 - p1, 1 - p2
+        print(q1, q2)
+        return 'NOT YET IMPLEMENTED'
+
     def gini_index(self, cat):        
         
         not_cat_not_tgt = 0
@@ -27,3 +32,10 @@ class DecisionTree(object):
         weighted_gini_index = gini_not * (not_cat_not_tgt + not_cat_yes_tgt) + gini_yes * (yes_cat_not_tgt + yes_cat_yes_tgt)
 
         return weighted_gini_index
+
+
+    def entropy(self, cat):
+        '''calculates the entropy of a column of data
+        the lesser the entropy the better
+        entropy = -p*log(p, 2) - q*log(q, 2)'''
+        pass
