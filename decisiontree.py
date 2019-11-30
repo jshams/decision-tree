@@ -39,3 +39,19 @@ class DecisionTree(object):
         the lesser the entropy the better
         entropy = -p*log(p, 2) - q*log(q, 2)'''
         pass
+
+class Question:
+    def __init__(self, col_index, val):
+        self.col_index = col_index
+        self.val = val
+    
+    def is_numeric(self, data):
+        '''indicates whether data is a number'''
+        return isinstance(data (int, float))
+
+    def satisfy(self, example):
+        example_val = example[self.col_index]
+        if self.is_numeric(example_val):
+            return example_val >= self.val
+        else:
+            return example_val == self.val
