@@ -1,15 +1,20 @@
-class DecisionTree(object):
-    def __init__(self, data=None, target=None):
+class DecisionTree:
+    def __init__(self, data, features):
         self.data = data
-        self.target = target
+        self.target = [row[-1] for row in data]
+        self.features = features
+        self.root = None
 
-    def weighted_gini_index(self, p1, p2):
-        q1, q2 = 1 - p1, 1 - p2
-        print(q1, q2)
-        return 'NOT YET IMPLEMENTED'
+    def find_best_split(self, rows):
+        '''finds the best split of data using gini index and information gain'''
+        pass
+
+    def info_gain(self, true_rows, false_rows, uncertainty):
+        '''returns the information gain of split data'''
+        pass
 
     def gini_index(self, cat):        
-        
+        '''this can be better'''
         not_cat_not_tgt = 0
         not_cat_yes_tgt = 0
         yes_cat_not_tgt = 0
