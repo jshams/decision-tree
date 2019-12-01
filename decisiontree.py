@@ -13,30 +13,24 @@ class DecisionTree:
         '''returns the information gain of split data'''
         pass
 
-    def gini_index(self, cat):        
+    def gini_index(self, rows):        
         '''this can be better'''
-        not_cat_not_tgt = 0
-        not_cat_yes_tgt = 0
-        yes_cat_not_tgt = 0
-        yes_cat_yes_tgt = 0
-
-        for cat_val, tgt in zip(cat, self.target):
-            if not cat_val and not tgt:
-                not_cat_not_targer += 1
-            elif not cat_val and tgt:
-                not_cat_yes_tgt += 1
-            elif cat_val and not tgt:
-                yes_cat_not_tgt += 1
-            else: # yes cat_val yes tgt
-                yes_cat_yes_tgt += 1
-
-        prob_not_cat = not_cat_yes_tgt / (not_cat_not_tgt + not_cat_yes_tgt)
-        prob_yes_cat = yes_cat_yes_tgt / (yes_cat_not_tgt + yes_cat_yes_tgt)
-        gini_not = prob_not_cat ** 2 + (1 - prob_not_cat) ** 2
-        gini_yes = prob_yes_cat ** 2 + (1 - prob_yes_cat) ** 2
-        weighted_gini_index = gini_not * (not_cat_not_tgt + not_cat_yes_tgt) + gini_yes * (yes_cat_not_tgt + yes_cat_yes_tgt)
-
-        return weighted_gini_index
+        counts = self.label_counts(rows)
+        impurity = 1
+        for count in counts.values():
+            p_label = count / len(rows)
+            impurity -= p_label**2
+        return impurity
+    
+    def label_counts(self, rows):
+        label_hist = {}
+        for row in rows:
+            label = row[-1]
+            if label not in label_hist:
+                label_hist[label] = 1
+            else:
+                label_hist[label] += 1
+        return label_hist
 
 
     def entropy(self, cat):
