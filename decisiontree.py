@@ -11,7 +11,10 @@ class DecisionTree:
 
     def info_gain(self, true_rows, false_rows, uncertainty):
         '''returns the information gain of split data'''
-        pass
+        p = len(true_rows) / (len(false_rows) + len(true_rows))
+        left_gini = self.gini_index(true_rows)
+        right_gini = self.gini_index(false_rows)
+        return uncertainty - p * left_gini - (1 - p) * right_gini
 
     def gini_index(self, rows):        
         '''this can be better'''
@@ -32,12 +35,15 @@ class DecisionTree:
                 label_hist[label] += 1
         return label_hist
 
+    def partition(self, rows, question):
+        true_rows, false_rows = [], []
+        for row in rows:
+            if question.satisfy(row):
+                true_rows.append(row)
+            else:
+                false_rows.append(row)
+        return true_rows, false_rows
 
-    def entropy(self, cat):
-        '''calculates the entropy of a column of data
-        the lesser the entropy the better
-        entropy = -p*log(p, 2) - q*log(q, 2)'''
-        pass
 
 class Question:
     def __init__(self, col_index, val):
