@@ -46,9 +46,10 @@ class DecisionTree:
 
 
 class Question:
-    def __init__(self, col_index, val):
+    def __init__(self, col_index, val, col_name):
         self.col_index = col_index
         self.val = val
+        self.col_name = col_name
     
     def is_numeric(self, data):
         '''indicates whether data is a number'''
@@ -60,6 +61,12 @@ class Question:
             return example_val >= self.val
         else:
             return example_val == self.val
+    
+    def __repr__(self):
+        condition = '>='
+        if not self.is_numeric(self.val):
+            condition = 'equal to'
+        return f'Is {self.col_name} {condition} {self.val}?'
 
 class LeafNode:
     def __init__(self, predictions):
