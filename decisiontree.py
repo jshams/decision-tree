@@ -1,13 +1,70 @@
+class Question:
+    def __init__(self, col_index, val, col_name):
+        self.col_index = col_index
+        self.val = val
+        self.col_name = col_name
+    
+    def is_numeric(self, data):
+        '''indicates whether data is a number'''
+        return isinstance(data (int, float))
+
+    def satisfy(self, example):
+        example_val = example[self.col_index]
+        if self.is_numeric(example_val):
+            return example_val >= self.val
+        else:
+            return example_val == self.val
+    
+    def __repr__(self):
+        condition = '>='
+        if not self.is_numeric(self.val):
+            condition = 'equal to'
+        return f'Is {self.col_name} {condition} {self.val}?'
+
+class LeafNode:
+    def __init__(self, predictions):
+        self.predictions = predictions
+
+
+class DecisionNode:
+    def __init__(self, question, true_branch, false_branch):
+        self.question = question
+        self.true_branch = true_branch
+        self.false_branch = false_branch
+
 class DecisionTree:
     def __init__(self, data, features):
         self.data = data
         self.target = [row[-1] for row in data]
         self.features = features
         self.root = None
+    
+    def build_tree(self, data):
+        '''build a tree given data'''
+        pass
 
     def find_best_split(self, rows):
         '''finds the best split of data using gini index and information gain'''
-        pass
+        max_gain = 0
+        best_question = None
+
+        current_uncertainty = self.gini_index(rows)
+
+        for col_index in range(len(rows[0]) - 1):
+            values = set([row[col_index] for row in rows])
+            
+            for val in values:
+                q = Question(col_index, val, self.features[col_index])
+                true_rows, false_rows = self.partition(rows, q)
+                if len(true_rows) == 0 or len(false_rows) == 0:
+                    continue
+                else:
+                    gain = self.info_gain(true_rows, false_rows, current_uncertainty)
+                if gain >= max_gain:
+                    max_gain = gain
+                    best_question = q
+
+        return max_gain, best_question
 
     def info_gain(self, true_rows, false_rows, uncertainty):
         '''returns the information gain of split data'''
@@ -44,38 +101,4 @@ class DecisionTree:
                 false_rows.append(row)
         return true_rows, false_rows
 
-
-class Question:
-    def __init__(self, col_index, val, col_name):
-        self.col_index = col_index
-        self.val = val
-        self.col_name = col_name
-    
-    def is_numeric(self, data):
-        '''indicates whether data is a number'''
-        return isinstance(data (int, float))
-
-    def satisfy(self, example):
-        example_val = example[self.col_index]
-        if self.is_numeric(example_val):
-            return example_val >= self.val
-        else:
-            return example_val == self.val
-    
-    def __repr__(self):
-        condition = '>='
-        if not self.is_numeric(self.val):
-            condition = 'equal to'
-        return f'Is {self.col_name} {condition} {self.val}?'
-
-class LeafNode:
-    def __init__(self, predictions):
-        self.predictions = predictions
-
-
-class DecisionNode:
-    def __init__(self, question, true_branch, false_branch):
-        self.question = question
-        self.true_branch = true_branch
-        self.false_branch = false_branch
 
