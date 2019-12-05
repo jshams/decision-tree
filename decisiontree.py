@@ -101,4 +101,14 @@ class DecisionTree:
                 false_rows.append(row)
         return true_rows, false_rows
 
+    def classify(self, row, node=None):
+        if node == None:
+            node = self.root
+        if isinstance(node, LeafNode):
+            return node.probabilities
+        if node.question.satisfy(row):
+            return self.classify(row, node.true_branch)
+        else:
+            return self.classify(row, node.false_branch)
+
 
