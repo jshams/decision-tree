@@ -48,6 +48,17 @@ class DecisionTree:
         false_branch = self.build_tree(false_rows)
         return DecisionNode(best_question, true_branch, false_branch)
 
+    def traverse_dfs(self, visit,node=None, depth=0):
+        if node is None:
+            node = self.root
+        visit(node, depth)
+        # print(node)
+        if not isinstance(node, LeafNode):
+            # visit(node.true_branch, depth)
+            self.traverse_dfs(visit, node.true_branch, depth + 1)
+            # visit(node.false_branch, depth)
+            self.traverse_dfs(visit, node.false_branch, depth + 1)
+
     def find_best_split(self, rows):
         '''finds the best split of data using gini index and information gain'''
         max_gain = 0
