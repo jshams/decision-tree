@@ -37,11 +37,16 @@ class DecisionTree:
         self.data = data
         self.target = [row[-1] for row in data]
         self.features = features
-        self.root = None
-    
-    def build_tree(self, data):
-        '''build a tree given data'''
-        pass
+        self.root = self.build_tree(self.data)
+
+    def build_tree(self, rows, parent=None):
+        gain, best_question = self.find_best_split(rows)
+        if gain == 0:
+            return LeafNode(self.label_counts(rows))
+        true_rows, false_rows = self.partition(rows, best_question)
+        true_branch = self.build_tree(true_rows)
+        false_branch = self.build_tree(false_rows)
+        return DecisionNode(best_question, true_branch, false_branch)
 
     def find_best_split(self, rows):
         '''finds the best split of data using gini index and information gain'''
