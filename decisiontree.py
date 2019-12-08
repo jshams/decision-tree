@@ -1,5 +1,7 @@
 class Question:
     def __init__(self, col_index, val, col_name):
+        '''initialize a question object with a column index, and a val
+        to ask a question on'''
         self.col_index = col_index
         self.val = val
         self.col_name = col_name
@@ -22,24 +24,28 @@ class Question:
         return f'Is {self.col_name} {condition} {self.val}?'
 
 class LeafNode:
+    '''initialize a leaf node with a prediction'''
     def __init__(self, predictions):
         self.predictions = predictions
 
 
 class DecisionNode:
     def __init__(self, question, true_branch, false_branch):
+        '''initialize a decision node with a question and its two branches'''
         self.question = question
         self.true_branch = true_branch
         self.false_branch = false_branch
 
 class DecisionTree:
     def __init__(self, data, features):
+        '''initialize a decision tree with features and data'''
         self.data = data
         self.target = [row[-1] for row in data]
         self.features = features
         self.root = self.build_tree(self.data)
 
     def build_tree(self, rows, parent=None):
+        '''takes the data and recursively builds a tree'''
         gain, best_question = self.find_best_split(rows)
         if gain == 0:
             return LeafNode(self.label_counts(rows))
@@ -49,10 +55,12 @@ class DecisionTree:
         return DecisionNode(best_question, true_branch, false_branch)
     
     def __iter__(self):
+        '''iterate through the tree using DFS'''
         for node, d in self.traverse_dfs(lambda item, j:item):
             yield node
 
     def traverse_dfs(self, visit,node=None, depth=0):
+        '''traverse the tree using DFS and applying a visit function to each node'''
         if node is None:
             node = self.root
         visit(node, depth)
@@ -64,6 +72,7 @@ class DecisionTree:
             self.traverse_dfs(visit, node.false_branch, depth + 1)
         
     def __repr__(self):
+        '''returns a string representation of the tree (still working on this)'''
         result = ''
         for node in self:
             result += str(node)
@@ -109,6 +118,7 @@ class DecisionTree:
         return impurity
     
     def label_counts(self, rows):
+        '''given data this will return a histogram of values in the label (last) column'''
         label_hist = {}
         for row in rows:
             label = row[-1]
@@ -119,6 +129,8 @@ class DecisionTree:
         return label_hist
 
     def partition(self, rows, question):
+        '''iterate through data asking a question on each row and partitioning the
+        data based on the answer'''
         true_rows, false_rows = [], []
         for row in rows:
             if question.satisfy(row):
@@ -128,6 +140,7 @@ class DecisionTree:
         return true_rows, false_rows
 
     def classify(self, row, node=None):
+        '''given a row input the tree can predict its outcome'''
         if node == None:
             node = self.root
         if isinstance(node, LeafNode):
