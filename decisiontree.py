@@ -23,10 +23,19 @@ class Question:
             condition = 'equal to'
         return f'Is {self.col_name} {condition} {self.val}?'
 
+
 class LeafNode:
     '''initialize a leaf node with a prediction'''
     def __init__(self, predictions):
         self.predictions = predictions
+        self.probabilities = self.get_probabilities()
+    
+    def get_probabilities(self):
+        total = sum(self.predictions.values())
+        probs = {}
+        for val, count in self.predictions.items():
+            probs[val] = 100 * (count / total)
+        return probs
 
 
 class DecisionNode:
@@ -36,11 +45,11 @@ class DecisionNode:
         self.true_branch = true_branch
         self.false_branch = false_branch
 
+
 class DecisionTree:
     def __init__(self, data, features):
         '''initialize a decision tree with features and data'''
         self.data = data
-        self.target = [row[-1] for row in data]
         self.features = features
         self.root = self.build_tree(self.data)
 
@@ -71,11 +80,26 @@ class DecisionTree:
             # visit(node.false_branch, depth)
             self.traverse_dfs(visit, node.false_branch, depth + 1)
         
-    def __repr__(self):
-        '''returns a string representation of the tree (still working on this)'''
-        result = ''
-        for node in self:
-            result += str(node)
+    def __repr__(self, node=None, indent='', result=''):
+        if node is None:
+            node = self.root
+        # Base case: we've reached a leaf
+        if isinstance(node, LeafNode):
+            return f'{indent}Prediction: {node.probabilities}\n'
+        # Print the question at this node
+        result += f'{indent} {node.question}\n'
+        indent += '    '
+
+        # Call this function recursively on the true branch
+        result += f'{indent}|--> True:\n'
+        result += self.__repr__(node.true_branch, indent + '|\t', result)
+
+        # Call this function recursively on the false branch
+        result += f'{indent}|--> False:\n'
+        result += self.__repr__(node.false_branch, indent + '|\t', result)
+        # print(node)
+        # print(result)
+        return result
 
 
     def find_best_split(self, rows):
