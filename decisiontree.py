@@ -175,3 +175,13 @@ class DecisionTree:
             return self.classify(row, node.false_branch)
 
 
+if __name__ == '__main__':
+    training_data = [
+        ['Green', 3, 'Apple'],
+        ['Yellow', 3,'Apple'],
+        ['Red', 1, 'Grape'],
+        ['Red', 1, 'Grape'],
+        ['Yellow', 3, 'Lemon']]
+    feature_names = ['color', 'diameter', 'fruit']
+    dt = DecisionTree(training_data, feature_names)
+    print(dt)
