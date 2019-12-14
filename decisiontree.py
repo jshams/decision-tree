@@ -8,7 +8,8 @@ class Question:
     
     def is_numeric(self, data):
         '''indicates whether data is a number'''
-        return isinstance(data (int, float))
+        return type(data) == int or type(data) == float
+        # return isinstance(data (int, float))
 
     def satisfy(self, example):
         example_val = example[self.col_index]
